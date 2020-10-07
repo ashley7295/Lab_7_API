@@ -16,10 +16,9 @@ def main(): #run functions in main and check for errors in the URL/Key
     if error:
         print('Error: cannot get weather')
     else:
-        current_temp, current_time = get_temp(weather_data)
-        forcasts = weather_data['list']
-        
-        print(f'The current temperature is {current_temp}F and the current time is {current_time}')
+        forcast_list = get_temp(weather_data)
+        for i in forcast_list:
+            print(i)
 
 def get_location(): #get and check data from the user
     city, country = '',''
@@ -51,14 +50,15 @@ def get_temp(weather_data): #gets the specific data we want from the API and che
             temp = forcast['main']['temp']
             timestamp = forcast['dt']
             forcast_date = datetime.fromtimestamp(timestamp)
-            return temp, forcast_date
-    except KeyError as k:
+            
+            temp_time_string = f'the current temp is {temp}F and the current time is {forcast_date}'
+            forcast_list = []
+            forcast_list.append(temp_time_string)
+
+            return forcast_list
+    except KeyError:
         print('Error with data formating')
-        return 'unknown', k
-
-
-    
-
+        return 'unknown'
 
 if __name__ == '__main__':
     main()
