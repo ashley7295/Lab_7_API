@@ -3,9 +3,8 @@ import requests
 import os
 from datetime import datetime
 
-#http://api.openweathermap.org/data/2.5/forecast?q=minneapolis,us&units=imperial&appid=36b75f061985cda7da1de6b1bfcbeedf
-
 #program used to get the weater data for a city requested by the user, uses a temporary API key
+#Logging is a good way to keep data relative to the developer and not needed for the user
 
 url = f'http://api.openweathermap.org/data/2.5/forecast'
 key = os.environ.get('WEATHER_KEY')
@@ -18,6 +17,8 @@ def main(): #run functions in main and check for errors in the URL/Key
         print('Error: cannot get weather')
     else:
         current_temp, current_time = get_temp(weather_data)
+        forcasts = weather_data['list']
+        
         print(f'The current temperature is {current_temp}F and the current time is {current_time}')
 
 def get_location(): #get and check data from the user
