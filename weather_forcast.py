@@ -1,11 +1,15 @@
 from pprint import pprint
 import requests
 import os
+from datetime import datetime
+
+#http://api.openweathermap.org/data/2.5/forecast?q=minneapolis,us&units=imperial&appid=36b75f061985cda7da1de6b1bfcbeedf
 
 #program used to get the weater data for a city requested by the user, uses a temporary API key
 
-url = f'http://api.openweathermap.org/data/2.5/weather'
+url = f'http://api.openweathermap.org/data/2.5/forecast'
 key = os.environ.get('WEATHER_KEY')
+
 
 def main(): #run functions in main and check for errors in the URL/Key
     location = get_location()
@@ -13,8 +17,8 @@ def main(): #run functions in main and check for errors in the URL/Key
     if error:
         print('Error: cannot get weather')
     else:
-        current_temp = get_temp(weather_data)
-        print(f'The current temperature is {current_temp}F')
+        current_temp, current_time = get_temp(weather_data)
+        print(f'The current temperature is {current_temp}F and the current time is {current_time}')
 
 def get_location(): #get and check data from the user
     city, country = '',''
@@ -41,11 +45,19 @@ def get_current_weather(location, key): #takes user inputed location and global 
 
 def get_temp(weather_data): #gets the specific data we want from the API and checks for errors
     try:
-        temp = weather_data['main']['temp']
-        return temp
-    except KeyError:
+        forcast_items = weather_data['list']
+        for forcast in forcast_items:
+            temp = forcast['main']['temp']
+            timestamp = forcast['dt']
+            forcast_date = datetime.fromtimestamp(timestamp)
+            return temp, forcast_date
+    except KeyError as k:
         print('Error with data formating')
-        return 'unknown'
+        return 'unknown', k
+
+
+    
+
 
 if __name__ == '__main__':
     main()
